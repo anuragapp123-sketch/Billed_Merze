@@ -1,4 +1,4 @@
-import streamlit as st  # यहाँ सुधारा गया है (as st)
+import streamlit as st
 import pandas as pd
 import zipfile
 import shutil
@@ -20,7 +20,7 @@ TARGET_COLUMNS = [
     'BILL_DATE', 'STATUS'
 ]
 
-# 2. File Uploader Component (अब यह बॉक्स स्क्रीन पर बिल्कुल सही दिखेगा)
+# 2. File Uploader Component
 uploaded_files = st.file_uploader(
     "1. Select Files (CSV/Excel/Zip)", 
     type=["xlsx", "xls", "csv", "zip"], 
@@ -54,10 +54,10 @@ if st.button("GENERATE REPORT (FAST)", type="primary"):
                         extract_path = os.path.join(temp_dir, "extracted")
                         with zipfile.ZipFile(zip_path, 'r') as z:
                             z.extractall(extract_path)
-                            
+                        
                         for r, _, files in os.walk(extract_path):
                             for f in files:
-                                if f.lower().endswith(('.xlsx', '.csv')):
+                                if f.lower().endswith(('.xlsx', '.xls', '.csv')):
                                     working_files.append((os.path.join(r, f), f.upper()))
                     else:
                         # नॉर्मल एक्सेल/सीएसवी फ़ाइल
@@ -68,7 +68,7 @@ if st.button("GENERATE REPORT (FAST)", type="primary"):
 
                 # डेटा प्रोसेस करना (तेज़ लॉजिक)
                 for fpath, fname in working_files:
-                    st.text(f"पढ़ रहा हूँ: {fname}")
+                    st.text(f"पढ़ रहा हूँ: {fname}")
                     
                     if fpath.lower().endswith('.csv'):
                         df = pd.read_csv(fpath, low_memory=False)
@@ -125,7 +125,7 @@ if st.button("GENERATE REPORT (FAST)", type="primary"):
                     st.success("🎉 मर्ज कम्प्लीट हो गया!")
                     
                     # 3. Download Button
-                    out_name = f"Billed_Unbilled_Merze_{datetime.now().strftime('%d-%m-%Y_%H-%M-%S')}.xlsx"
+                    out_name = f"Billed_Unbilled_Merge_{datetime.now().strftime('%d-%m-%Y_%H-%M-%S')}.xlsx"
                     st.download_button(
                         label="📥 डाउनलोड एक्सेल रिपोर्ट",
                         data=output.getvalue(),
